@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
     function addRow() {
         const newRow = document.createElement("tr");
 
-        // Add 10 columns (input fields) to the row
         for (let i = 0; i < 10; i++) {
             const newCell = document.createElement("td");
             const input = document.createElement("input");
@@ -44,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
             tableData.push(rowData);
         }
 
-        // Save the data as a JSON string
+        // Save the data as a JSON string in localStorage
         localStorage.setItem("tableData", JSON.stringify(tableData));
     }
 
@@ -55,8 +54,23 @@ document.addEventListener("DOMContentLoaded", function() {
         if (savedData) {
             const tableData = JSON.parse(savedData);
 
-            // Add rows to the table for each saved row of data
             for (let rowData of tableData) {
                 const newRow = document.createElement("tr");
 
-                // Add 10 cells (input fields) with saved
+                for (let data of rowData) {
+                    const newCell = document.createElement("td");
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.value = data;
+                    newCell.appendChild(input);
+                    newRow.appendChild(newCell);
+                }
+
+                tableBody.appendChild(newRow);
+            }
+        }
+    }
+
+    // Ensure that the table data is saved whenever there is a change
+    tableBody.addEventListener("input", saveTableData);
+});
