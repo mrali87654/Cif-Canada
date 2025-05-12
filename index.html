@@ -1,36 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel-like Table</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Excel-like Table</h1>
-        <table id="excel-table">
-            <thead>
-                <tr>
-                    <th>Column 1</th>
-                    <th>Column 2</th>
-                    <th>Column 3</th>
-                    <th>Column 4</th>
-                    <th>Column 5</th>
-                    <th>Column 6</th>
-                    <th>Column 7</th>
-                    <th>Column 8</th>
-                    <th>Column 9</th>
-                    <th>Column 10</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Rows will be dynamically inserted here -->
-            </tbody>
-        </table>
-        <button id="add-row">Add Row</button>
-    </div>
+document.addEventListener("DOMContentLoaded", function() {
+    const tableBody = document.getElementById("table-body");
+    const addRowButton = document.getElementById("add-row");
 
-    <script src="script.js"></script>
-</body>
-</html>
+    // Fetch the saved data from the server when the page loads
+    fetchTableData();
+
+    // Add a new row to the table when the "Add Row" button is clicked
+    addRowButton.addEventListener("click", function() {
+        addRow();
+        saveTableData();
+    });
+
+    // Function to create a new row with editable cells
+    function addRow() {
+        const newRow = document.createElement("tr");
+
+        for (let i = 0; i < 10; i++) {
+            const newCell = document.createElement("td");
+            const input = document.createElement("input");
+            input.type = "text";
+            newCell.appendChild(input);
+            newRow.appendChild(newCell);
+        }
+
+        tableBody.appendChild(newRow);
+    }
+
+    // Function to save the current table data to the server
+    function saveTableData() {
+        const rows = tableBody.getElementsByTagName("tr");
+        const tableData = [];
+
+        for (let row of rows) {
+            const rowData = [];
+            const cells = row.getElementsByTagName("td");
+
+            for (let cell of cells) {
+                const input = cell.querySelector("input");
+                rowData.push(input ? input.value : "");
+            }
+
+            tableData.push(rowData);
+        }
+
+        // Send data to the server
+        fetch("/api/save-data", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ tableData })
+        });
+    }
+
+    // Function to fetch the table data from the server
+    function fetchTableData() {
+        fetch("/api/get-data")
+            .then(response => response.json())
+            .then(data => {
+                for (let rowData of data) {
+                    const newRow = document.createElement("tr");
+
+                    for (let dataItem of rowData) {
+                        const newCell = document.createElement("td");
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.value = dataItem;
+                        newCell.appendChild(input);
+                        newRow.appendChild(newCell);
+                    }
+
+                    tableBody.appendChild(newRow);
+                }
+            });
+    }
+});
