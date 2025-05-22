@@ -1,1 +1,122 @@
-<iframe src="https://www.mtrtml.com/vs/vessel-visit-future.php" width="100%" height="600" frameborder="0"></iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editable Vessel Schedule</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: left;
+    }
+    td {
+      background-color: #fff;
+    }
+    td[contenteditable]:focus {
+      background-color: #eef;
+    }
+    button {
+      margin: 10px 5px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Vessel Schedule (Editable Table)</h2>
+
+<table id="vesselTable">
+  <thead>
+    <tr>
+      <th>Vessel Name</th>
+      <th>Arrival Date</th>
+      <th>Departure Date</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr contenteditable="true">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<button onclick="addRow()">Add Row</button>
+<button onclick="saveData()">Save</button>
+<button onclick="loadData()">Load</button>
+<button onclick="exportCSV()">Export CSV</button>
+
+<script>
+  function addRow() {
+    const table = document.getElementById('vesselTable').getElementsByTagName('tbody')[0];
+    const row = table.insertRow();
+    for (let i = 0; i < 4; i++) {
+      const cell = row.insertCell();
+      cell.contentEditable = "true";
+    }
+  }
+
+  function saveData() {
+    const table = document.getElementById('vesselTable');
+    const data = [];
+    for (let r = 1; r < table.rows.length; r++) {
+      const row = [];
+      for (let c = 0; c < table.rows[r].cells.length; c++) {
+        row.push(table.rows[r].cells[c].innerText);
+      }
+      data.push(row);
+    }
+    localStorage.setItem('vesselSchedule', JSON.stringify(data));
+    alert('Data saved to local storage!');
+  }
+
+  function loadData() {
+    const table = document.getElementById('vesselTable').getElementsByTagName('tbody')[0];
+    table.innerHTML = '';
+    const data = JSON.parse(localStorage.getItem('vesselSchedule')) || [];
+    data.forEach(rowData => {
+      const row = table.insertRow();
+      rowData.forEach(cellData => {
+        const cell = row.insertCell();
+        cell.textContent = cellData;
+        cell.contentEditable = "true";
+      });
+    });
+  }
+
+  function exportCSV() {
+    const table = document.getElementById('vesselTable');
+    let csv = "";
+    for (let r = 0; r < table.rows.length; r++) {
+      const row = [];
+      for (let c = 0; c < table.rows[r].cells.length; c++) {
+        row.push('"' + table.rows[r].cells[c].innerText + '"');
+      }
+      csv += row.join(",") + "\n";
+    }
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "vessel_schedule.csv";
+    link.click();
+  }
+
+  // Load data on page load
+  window.onload = loadData;
+</script>
+
+</body>
+</html>
