@@ -2,84 +2,110 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PDF Merger</title>
+  <title>PDF + Images Merger</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
-    #drop-zone {
-      border: 2px dashed #ccc;
-      padding: 40px;
-      background: #f9f9f9;
-      margin-bottom: 20px;
-      cursor: pointer;
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    #pdf-zone, #image-zone {
+      border: 2px dashed #888;
+      padding: 30px;
+      margin: 20px auto;
+      width: 300px;
+      background: #f8f8f8;
     }
-    #drop-zone.hover { background: #e0ffe0; }
+    .hover { background-color: #ddf; }
+    button { margin-top: 20px; padding: 10px 20px; }
+    ul { text-align: left; display: inline-block; padding: 0; list-style: none; }
   </style>
 </head>
 <body>
 
-  <h1>Drop Images and PDF to Merge</h1>
-  <div id="drop-zone">Drop your files here (1 PDF + images)</div>
-  <button id="merge-btn" disabled>Merge and Download PDF</button>
+  <h1>PDF and Image Merger</h1>
+
+  <div id="pdf-zone">Drop your PDF here first</div>
+  <div id="image-zone" style="opacity: 0.4; pointer-events: none;">Then drop images one by one (in order)</div>
+  <ul id="image-list"></ul>
+
+  <button id="merge-btn" disabled>Merge and Download</button>
+
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-
   <script>
-    const dropZone = document.getElementById('drop-zone');
+    const pdfZone = document.getElementById('pdf-zone');
+    const imageZone = document.getElementById('image-zone');
     const mergeBtn = document.getElementById('merge-btn');
-    let imageFiles = [];
+    const imageList = document.getElementById('image-list');
+
     let pdfFile = null;
+    let imageFiles = [];
 
-    dropZone.addEventListener('dragover', (e) => {
+    function enableImageDrop() {
+      imageZone.style.opacity = "1";
+      imageZone.style.pointerEvents = "auto";
+    }
+
+    function handleDragOver(e, zone) {
       e.preventDefault();
-      dropZone.classList.add('hover');
-    });
+      zone.classList.add('hover');
+    }
 
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('hover');
-    });
+    function handleDragLeave(zone) {
+      zone.classList.remove('hover');
+    }
 
-    dropZone.addEventListener('drop', (e) => {
+    pdfZone.addEventListener('dragover', e => handleDragOver(e, pdfZone));
+    pdfZone.addEventListener('dragleave', () => handleDragLeave(pdfZone));
+    pdfZone.addEventListener('drop', (e) => {
       e.preventDefault();
-      dropZone.classList.remove('hover');
-      const files = Array.from(e.dataTransfer.files);
-
-      imageFiles = [];
-      pdfFile = null;
-
-      files.forEach(file => {
-        if (file.type === 'application/pdf' && !pdfFile) {
-          pdfFile = file;
-        } else if (file.type.startsWith('image/')) {
-          imageFiles.push(file);
-        }
-      });
-
-      if (pdfFile && imageFiles.length > 0) {
+      pdfZone.classList.remove('hover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        pdfFile = file;
+        alert('PDF uploaded.');
+        enableImageDrop();
         mergeBtn.disabled = false;
-        alert("Ready to merge PDF and " + imageFiles.length + " image(s).");
       } else {
-        alert("Please drop one PDF and at least one image.");
-        mergeBtn.disabled = true;
+        alert('Please drop a valid PDF.');
+      }
+    });
+
+    imageZone.addEventListener('dragover', e => handleDragOver(e, imageZone));
+    imageZone.addEventListener('dragleave', () => handleDragLeave(imageZone));
+    imageZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageZone.classList.remove('hover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        imageFiles.push(file);
+        const li = document.createElement('li');
+        li.textContent = file.name;
+        imageList.appendChild(li);
+      } else {
+        alert('Please drop a valid image file.');
       }
     });
 
     mergeBtn.addEventListener('click', async () => {
+      if (!pdfFile || imageFiles.length === 0) {
+        alert('Please add both PDF and images.');
+        return;
+      }
+
       const existingPdfBytes = await pdfFile.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-      const imagePromises = imageFiles.map(f => f.arrayBuffer());
 
-      for (const buffer of await Promise.all(imagePromises)) {
+      for (const file of imageFiles) {
+        const buffer = await file.arrayBuffer();
         const imgType = new Uint8Array(buffer)[0] === 0xFF ? 'jpg' : 'png';
         const image = imgType === 'jpg'
           ? await pdfDoc.embedJpg(buffer)
           : await pdfDoc.embedPng(buffer);
         const page = pdfDoc.addPage();
         const { width, height } = page.getSize();
-        const imgDims = image.scaleToFit(width, height);
+        const dims = image.scaleToFit(width, height);
         page.drawImage(image, {
-          x: (width - imgDims.width) / 2,
-          y: (height - imgDims.height) / 2,
-          width: imgDims.width,
-          height: imgDims.height,
+          x: (width - dims.width) / 2,
+          y: (height - dims.height) / 2,
+          width: dims.width,
+          height: dims.height
         });
       }
 
