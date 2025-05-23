@@ -1,122 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Editable Vessel Schedule</title>
+  <meta charset="UTF-8">
+  <title>PDF Merger</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+    body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+    #drop-zone {
+      border: 2px dashed #ccc;
+      padding: 40px;
+      background: #f9f9f9;
+      margin-bottom: 20px;
+      cursor: pointer;
     }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 8px;
-      text-align: left;
-    }
-    td {
-      background-color: #fff;
-    }
-    td[contenteditable]:focus {
-      background-color: #eef;
-    }
-    button {
-      margin: 10px 5px;
-      padding: 8px 12px;
-      font-size: 14px;
-    }
+    #drop-zone.hover { background: #e0ffe0; }
   </style>
 </head>
 <body>
 
-<h2>Vessel Schedule (Editable Table)</h2>
+  <h1>Drop Images and PDF to Merge</h1>
+  <div id="drop-zone">Drop your files here (1 PDF + images)</div>
+  <button id="merge-btn" disabled>Merge and Download PDF</button>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
-<table id="vesselTable">
-  <thead>
-    <tr>
-      <th>Vessel Name</th>
-      <th>Arrival Date</th>
-      <th>Departure Date</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr contenteditable="true">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const mergeBtn = document.getElementById('merge-btn');
+    let imageFiles = [];
+    let pdfFile = null;
 
-<button onclick="addRow()">Add Row</button>
-<button onclick="saveData()">Save</button>
-<button onclick="loadData()">Load</button>
-<button onclick="exportCSV()">Export CSV</button>
-
-<script>
-  function addRow() {
-    const table = document.getElementById('vesselTable').getElementsByTagName('tbody')[0];
-    const row = table.insertRow();
-    for (let i = 0; i < 4; i++) {
-      const cell = row.insertCell();
-      cell.contentEditable = "true";
-    }
-  }
-
-  function saveData() {
-    const table = document.getElementById('vesselTable');
-    const data = [];
-    for (let r = 1; r < table.rows.length; r++) {
-      const row = [];
-      for (let c = 0; c < table.rows[r].cells.length; c++) {
-        row.push(table.rows[r].cells[c].innerText);
-      }
-      data.push(row);
-    }
-    localStorage.setItem('vesselSchedule', JSON.stringify(data));
-    alert('Data saved to local storage!');
-  }
-
-  function loadData() {
-    const table = document.getElementById('vesselTable').getElementsByTagName('tbody')[0];
-    table.innerHTML = '';
-    const data = JSON.parse(localStorage.getItem('vesselSchedule')) || [];
-    data.forEach(rowData => {
-      const row = table.insertRow();
-      rowData.forEach(cellData => {
-        const cell = row.insertCell();
-        cell.textContent = cellData;
-        cell.contentEditable = "true";
-      });
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('hover');
     });
-  }
 
-  function exportCSV() {
-    const table = document.getElementById('vesselTable');
-    let csv = "";
-    for (let r = 0; r < table.rows.length; r++) {
-      const row = [];
-      for (let c = 0; c < table.rows[r].cells.length; c++) {
-        row.push('"' + table.rows[r].cells[c].innerText + '"');
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('hover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('hover');
+      const files = Array.from(e.dataTransfer.files);
+
+      imageFiles = [];
+      pdfFile = null;
+
+      files.forEach(file => {
+        if (file.type === 'application/pdf' && !pdfFile) {
+          pdfFile = file;
+        } else if (file.type.startsWith('image/')) {
+          imageFiles.push(file);
+        }
+      });
+
+      if (pdfFile && imageFiles.length > 0) {
+        mergeBtn.disabled = false;
+        alert("Ready to merge PDF and " + imageFiles.length + " image(s).");
+      } else {
+        alert("Please drop one PDF and at least one image.");
+        mergeBtn.disabled = true;
       }
-      csv += row.join(",") + "\n";
-    }
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "vessel_schedule.csv";
-    link.click();
-  }
+    });
 
-  // Load data on page load
-  window.onload = loadData;
-</script>
+    mergeBtn.addEventListener('click', async () => {
+      const existingPdfBytes = await pdfFile.arrayBuffer();
+      const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+      const imagePromises = imageFiles.map(f => f.arrayBuffer());
 
+      for (const buffer of await Promise.all(imagePromises)) {
+        const imgType = new Uint8Array(buffer)[0] === 0xFF ? 'jpg' : 'png';
+        const image = imgType === 'jpg'
+          ? await pdfDoc.embedJpg(buffer)
+          : await pdfDoc.embedPng(buffer);
+        const page = pdfDoc.addPage();
+        const { width, height } = page.getSize();
+        const imgDims = image.scaleToFit(width, height);
+        page.drawImage(image, {
+          x: (width - imgDims.width) / 2,
+          y: (height - imgDims.height) / 2,
+          width: imgDims.width,
+          height: imgDims.height,
+        });
+      }
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'merged.pdf';
+      link.click();
+    });
+  </script>
 </body>
 </html>
