@@ -1,183 +1,78 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const tableBody = document.getElementById("table-body");
-    const addRowButton = document.getElementById("add-row");
-    const ectnHeader = document.getElementById("ectn-header");
+function addVehicle(){
 
-    // Load the saved data from localStorage when the page loads
-    loadTableData();
+let table=document.querySelector("#vehicleTable tbody");
 
-    // Add a new row to the table when the "Add Row" button is clicked
-    addRowButton.addEventListener("click", function() {
-        addRow();
-        saveTableData();
-    });
+let row=table.insertRow();
 
-    // Function to create a new row with editable cells
-    function addRow() {
-        const newRow = document.createElement("tr");
+row.innerHTML=`
+<td><input></td>
+<td><input></td>
+<td><input></td>
+<td><input value="1"></td>
+`;
 
-        // Client Name (First column)
-        const clientNameCell = document.createElement("td");
-        const clientNameInput = document.createElement("input");
-        clientNameInput.type = "text";
-        clientNameCell.appendChild(clientNameInput);
-        newRow.appendChild(clientNameCell);
+}
 
-        // Booking Number (Second column)
-        const bookingNumberCell = document.createElement("td");
-        const bookingNumberInput = document.createElement("input");
-        bookingNumberInput.type = "text";
-        bookingNumberCell.appendChild(bookingNumberInput);
-        newRow.appendChild(bookingNumberCell);
+function generateBL(){
 
-        // Send Photos (Third column with checkbox)
-        const sendPhotosCell = document.createElement("td");
-        const sendPhotosCheckbox = document.createElement("input");
-        sendPhotosCheckbox.type = "checkbox";
-        sendPhotosCell.appendChild(sendPhotosCheckbox);
-        newRow.appendChild(sendPhotosCell);
+const { jsPDF }=window.jspdf;
 
-        // Destination (Fourth column)
-        const destinationCell = document.createElement("td");
-        const destinationInput = document.createElement("input");
-        destinationInput.type = "text";
-        destinationInput.addEventListener("input", function() {
-            toggleECTNColumn(destinationInput.value); // Show/Hide ECTN based on Destination input
-        });
-        destinationCell.appendChild(destinationInput);
-        newRow.appendChild(destinationCell);
+let pdf=new jsPDF();
 
-        // Number of Cars (Fifth column)
-        const numberOfCarsCell = document.createElement("td");
-        const numberOfCarsInput = document.createElement("input");
-        numberOfCarsInput.type = "number";
-        numberOfCarsCell.appendChild(numberOfCarsInput);
-        newRow.appendChild(numberOfCarsCell);
+pdf.setFontSize(18);
 
-        // ECTN (Sixth column, initially hidden)
-        const ectnCell = document.createElement("td");
-        const ectnInput = document.createElement("input");
-        ectnInput.type = "text";
-        ectnCell.appendChild(ectnInput);
-        newRow.appendChild(ectnCell);
+pdf.text("HOUSE BILL OF LADING",20,20);
 
-        // Append the new row to the table body
-        tableBody.appendChild(newRow);
-    }
+pdf.setFontSize(12);
 
-    // Toggle the ECTN column visibility based on Destination input
-    function toggleECTNColumn(destination) {
-        if (destination && destination.trim() !== "") {
-            ectnHeader.style.display = "table-cell"; // Show ECTN column
-        } else {
-            ectnHeader.style.display = "none"; // Hide ECTN column
-        }
+pdf.text("Booking #: "+document.getElementById("booking").value,20,35);
 
-        // Update the visibility for the ECTN cell in each row
-        const rows = tableBody.getElementsByTagName("tr");
-        for (let row of rows) {
-            const ectnCell = row.cells[5]; // The ECTN column (index 5)
-            if (destination && destination.trim() !== "") {
-                ectnCell.style.display = "table-cell";
-            } else {
-                ectnCell.style.display = "none";
-            }
-        }
-    }
+pdf.text("Container #: "+document.getElementById("container").value,20,43);
 
-    // Function to save the current table data into localStorage
-    function saveTableData() {
-        const rows = tableBody.getElementsByTagName("tr");
-        const tableData = [];
+pdf.text("Seal #: "+document.getElementById("seal").value,20,51);
 
-        for (let row of rows) {
-            const rowData = [];
-            const cells = row.getElementsByTagName("td");
+pdf.text("Transshipment: "+document.getElementById("trans").value,20,59);
 
-            for (let cell of cells) {
-                const input = cell.querySelector("input");
-                if (input) {
-                    rowData.push(input.type === "checkbox" ? input.checked : input.value);
-                }
-            }
+pdf.text("Exporter:",20,75);
 
-            tableData.push(rowData);
-        }
+pdf.text(document.getElementById("exporter").value,20,82);
 
-        // Save the data as a JSON string in localStorage
-        localStorage.setItem("tableData", JSON.stringify(tableData));
-    }
+pdf.text("Consignee:",110,75);
 
-    // Function to load the table data from localStorage
-    function loadTableData() {
-        const savedData = localStorage.getItem("tableData");
+pdf.text(document.getElementById("consignee").value,110,82);
 
-        if (savedData) {
-            const tableData = JSON.parse(savedData);
+pdf.text("Notify:",20,120);
 
-            for (let rowData of tableData) {
-                const newRow = document.createElement("tr");
+pdf.text(document.getElementById("notify").value,20,127);
 
-                // Client Name
-                const clientNameCell = document.createElement("td");
-                const clientNameInput = document.createElement("input");
-                clientNameInput.type = "text";
-                clientNameInput.value = rowData[0];
-                clientNameCell.appendChild(clientNameInput);
-                newRow.appendChild(clientNameCell);
+let y=170;
 
-                // Booking Number
-                const bookingNumberCell = document.createElement("td");
-                const bookingNumberInput = document.createElement("input");
-                bookingNumberInput.type = "text";
-                bookingNumberInput.value = rowData[1];
-                bookingNumberCell.appendChild(bookingNumberInput);
-                newRow.appendChild(bookingNumberCell);
+pdf.text("MODEL & YEAR",10,y);
 
-                // Send Photos (Checkbox)
-                const sendPhotosCell = document.createElement("td");
-                const sendPhotosCheckbox = document.createElement("input");
-                sendPhotosCheckbox.type = "checkbox";
-                sendPhotosCheckbox.checked = rowData[2];
-                sendPhotosCell.appendChild(sendPhotosCheckbox);
-                newRow.appendChild(sendPhotosCell);
+pdf.text("VIN NUMBER",80,y);
 
-                // Destination
-                const destinationCell = document.createElement("td");
-                const destinationInput = document.createElement("input");
-                destinationInput.type = "text";
-                destinationInput.value = rowData[3];
-                destinationInput.addEventListener("input", function() {
-                    toggleECTNColumn(destinationInput.value);
-                });
-                destinationCell.appendChild(destinationInput);
-                newRow.appendChild(destinationCell);
+pdf.text("WEIGHT",150,y);
 
-                // Number of Cars
-                const numberOfCarsCell = document.createElement("td");
-                const numberOfCarsInput = document.createElement("input");
-                numberOfCarsInput.type = "number";
-                numberOfCarsInput.value = rowData[4];
-                numberOfCarsCell.appendChild(numberOfCarsInput);
-                newRow.appendChild(numberOfCarsCell);
+pdf.text("QTY",180,y);
 
-                // ECTN (Initially hidden, populated from saved data)
-                const ectnCell = document.createElement("td");
-                const ectnInput = document.createElement("input");
-                ectnInput.type = "text";
-                ectnInput.value = rowData[5];
-                ectnCell.appendChild(ectnInput);
-                newRow.appendChild(ectnCell);
+y+=10;
 
-                // Append the row
-                tableBody.appendChild(newRow);
+document.querySelectorAll("#vehicleTable tbody tr").forEach(row=>{
 
-                // Trigger the ECTN column visibility based on destination
-                toggleECTNColumn(rowData[3]);
-            }
-        }
-    }
+let c=row.querySelectorAll("input");
 
-    // Ensure the table data is saved whenever there is a change
-    tableBody.addEventListener("input", saveTableData);
+pdf.text(c[0].value,10,y);
+
+pdf.text(c[1].value,80,y);
+
+pdf.text(c[2].value,150,y);
+
+pdf.text(c[3].value,180,y);
+
+y+=10;
+
 });
+
+pdf.save("House_BL.pdf");
+
+}
