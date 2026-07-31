@@ -7,69 +7,57 @@
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="script.js"></script>
 
 </head>
 
 <body>
 
-<h2>House B/L Generator</h2>
+<h2>HAM INTERNATIONAL TRANSPORT - House B/L Generator</h2>
 
 <h3>Shipment Information</h3>
 
 <input id="booking" placeholder="Booking #">
-
 <input id="container" placeholder="Container #">
-
 <input id="seal" placeholder="Seal #">
-
 <input id="trans" placeholder="Transshipment">
 
 <h3>Exporter</h3>
-
 <textarea id="exporter"></textarea>
 
 <h3>Consignee</h3>
-
 <textarea id="consignee"></textarea>
 
-<h3>Notify</h3>
-
+<h3>Notify Party</h3>
 <textarea id="notify"></textarea>
 
-<hr>
 
 <h3>Vehicles</h3>
 
 <table id="vehicleTable">
 
 <thead>
-
 <tr>
-
 <th>Model & Year</th>
-
 <th>VIN</th>
-
-<th>Weight</th>
-
+<th>Weight (KG)</th>
 <th>Qty</th>
-
 </tr>
-
 </thead>
 
 <tbody>
-
 </tbody>
 
 </table>
 
+
 <button onclick="addVehicle()">Add Vehicle</button>
 
-<br><br>
+<br>
 
-<button onclick="generateBL()">Generate House BL</button>
+<button onclick="generateBL()">Generate House B/L</button>
+
+
+<script src="script.js"></script>
 
 </body>
 </html>
