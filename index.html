@@ -1,121 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>PDF + Images Merger</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; }
-    #pdf-zone, #image-zone {
-      border: 2px dashed #888;
-      padding: 30px;
-      margin: 20px auto;
-      width: 300px;
-      background: #f8f8f8;
-    }
-    .hover { background-color: #ddf; }
-    button { margin-top: 20px; padding: 10px 20px; }
-    ul { text-align: left; display: inline-block; padding: 0; list-style: none; }
-  </style>
+<meta charset="UTF-8">
+<title>House B/L Generator</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+
 </head>
+
 <body>
 
-  <h1>PDF and Image Merger</h1>
+<h2>House B/L Generator</h2>
 
-  <div id="pdf-zone">Drop your PDF here first</div>
-  <div id="image-zone" style="opacity: 0.4; pointer-events: none;">Then drop images one by one (in order)</div>
-  <ul id="image-list"></ul>
+<h3>Shipment Information</h3>
 
-  <button id="merge-btn" disabled>Merge and Download</button>
+<input id="booking" placeholder="Booking #">
 
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-  <script>
-    const pdfZone = document.getElementById('pdf-zone');
-    const imageZone = document.getElementById('image-zone');
-    const mergeBtn = document.getElementById('merge-btn');
-    const imageList = document.getElementById('image-list');
+<input id="container" placeholder="Container #">
 
-    let pdfFile = null;
-    let imageFiles = [];
+<input id="seal" placeholder="Seal #">
 
-    function enableImageDrop() {
-      imageZone.style.opacity = "1";
-      imageZone.style.pointerEvents = "auto";
-    }
+<input id="trans" placeholder="Transshipment">
 
-    function handleDragOver(e, zone) {
-      e.preventDefault();
-      zone.classList.add('hover');
-    }
+<h3>Exporter</h3>
 
-    function handleDragLeave(zone) {
-      zone.classList.remove('hover');
-    }
+<textarea id="exporter"></textarea>
 
-    pdfZone.addEventListener('dragover', e => handleDragOver(e, pdfZone));
-    pdfZone.addEventListener('dragleave', () => handleDragLeave(pdfZone));
-    pdfZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      pdfZone.classList.remove('hover');
-      const file = e.dataTransfer.files[0];
-      if (file && file.type === 'application/pdf') {
-        pdfFile = file;
-        alert('PDF uploaded.');
-        enableImageDrop();
-        mergeBtn.disabled = false;
-      } else {
-        alert('Please drop a valid PDF.');
-      }
-    });
+<h3>Consignee</h3>
 
-    imageZone.addEventListener('dragover', e => handleDragOver(e, imageZone));
-    imageZone.addEventListener('dragleave', () => handleDragLeave(imageZone));
-    imageZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      imageZone.classList.remove('hover');
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) {
-        imageFiles.push(file);
-        const li = document.createElement('li');
-        li.textContent = file.name;
-        imageList.appendChild(li);
-      } else {
-        alert('Please drop a valid image file.');
-      }
-    });
+<textarea id="consignee"></textarea>
 
-    mergeBtn.addEventListener('click', async () => {
-      if (!pdfFile || imageFiles.length === 0) {
-        alert('Please add both PDF and images.');
-        return;
-      }
+<h3>Notify</h3>
 
-      const existingPdfBytes = await pdfFile.arrayBuffer();
-      const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+<textarea id="notify"></textarea>
 
-      for (const file of imageFiles) {
-        const buffer = await file.arrayBuffer();
-        const imgType = new Uint8Array(buffer)[0] === 0xFF ? 'jpg' : 'png';
-        const image = imgType === 'jpg'
-          ? await pdfDoc.embedJpg(buffer)
-          : await pdfDoc.embedPng(buffer);
-        const page = pdfDoc.addPage();
-        const { width, height } = page.getSize();
-        const dims = image.scaleToFit(width, height);
-        page.drawImage(image, {
-          x: (width - dims.width) / 2,
-          y: (height - dims.height) / 2,
-          width: dims.width,
-          height: dims.height
-        });
-      }
+<hr>
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'merged.pdf';
-      link.click();
-    });
-  </script>
+<h3>Vehicles</h3>
+
+<table id="vehicleTable">
+
+<thead>
+
+<tr>
+
+<th>Model & Year</th>
+
+<th>VIN</th>
+
+<th>Weight</th>
+
+<th>Qty</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+<button onclick="addVehicle()">Add Vehicle</button>
+
+<br><br>
+
+<button onclick="generateBL()">Generate House BL</button>
+
 </body>
 </html>
