@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<title>House B/L Generator</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HAM House Bill of Lading Generator</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -12,52 +17,158 @@
 
 <body>
 
-<h2>HAM INTERNATIONAL TRANSPORT - House B/L Generator</h2>
+<div class="container">
 
-<h3>Shipment Information</h3>
+<h1>HAM INTERNATIONAL TRANSPORT</h1>
 
-<input id="booking" placeholder="Booking #">
-<input id="container" placeholder="Container #">
-<input id="seal" placeholder="Seal #">
-<input id="trans" placeholder="Transshipment">
+<p class="subtitle">House Bill of Lading Generator</p>
 
-<h3>Exporter</h3>
+<!-- Shipment Information -->
+
+<div class="card">
+
+<h2>Shipment Information</h2>
+
+<div class="grid2">
+
+<div>
+
+<label>Booking Number</label>
+
+<input id="booking" type="text">
+
+</div>
+
+<div>
+
+<label>Container Number</label>
+
+<input id="container" type="text">
+
+</div>
+
+<div>
+
+<label>Seal Number</label>
+
+<input id="seal" type="text">
+
+</div>
+
+<div>
+
+<label>Transshipment</label>
+
+<input id="trans" type="text">
+
+</div>
+
+<div>
+
+<label>HBL Number</label>
+
+<input id="hbl" type="text" placeholder="HAM-000001">
+
+</div>
+
+<div>
+
+<label>Date</label>
+
+<input id="date" type="date">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Exporter -->
+
+<div class="card">
+
+<h2>Exporter</h2>
+
 <textarea id="exporter"></textarea>
 
-<h3>Consignee</h3>
+</div>
+
+<!-- Consignee -->
+
+<div class="card">
+
+<h2>Consignee</h2>
+
 <textarea id="consignee"></textarea>
 
-<h3>Notify Party</h3>
+</div>
+
+<!-- Notify -->
+
+<div class="card">
+
+<h2>Notify Party</h2>
+
 <textarea id="notify"></textarea>
 
+</div>
 
-<h3>Vehicles</h3>
+<!-- Vehicles -->
+
+<div class="card">
+
+<h2>Vehicles</h2>
 
 <table id="vehicleTable">
 
 <thead>
+
 <tr>
+
 <th>Model & Year</th>
-<th>VIN</th>
+
+<th>VIN Number</th>
+
 <th>Weight (KG)</th>
+
 <th>Qty</th>
+
+<th>Remove</th>
+
 </tr>
+
 </thead>
 
 <tbody>
+
 </tbody>
 
 </table>
 
-
-<button onclick="addVehicle()">Add Vehicle</button>
-
 <br>
 
-<button onclick="generateBL()">Generate House B/L</button>
+<button id="addVehicleBtn">
 
++ Add Vehicle
+
+</button>
+
+</div>
+
+<div class="buttons">
+
+<button id="generateBtn">
+
+Generate House B/L PDF
+
+</button>
+
+</div>
+
+</div>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
