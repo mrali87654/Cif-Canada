@@ -1,373 +1,192 @@
-// =====================================
-// HAM HOUSE B/L GENERATOR
-// SCRIPT.JS
-// =====================================
+// ===============================
+// HAM HOUSE BILL OF LADING
+// script.js
+// ===============================
 
+// Add a new vehicle row
+function addRow() {
 
-// Add vehicle row
+    const tbody = document.querySelector("#vehicleTable tbody");
 
-function addVehicle(){
-
-    let table = document.getElementById("vehicleInput");
-
-
-    let row = table.insertRow();
-
+    const row = document.createElement("tr");
 
     row.innerHTML = `
-
-    <td>
-        <input class="model">
-    </td>
-
-    <td>
-        <input class="vin">
-    </td>
-
-    <td>
-        <input class="weight">
-    </td>
-
-    <td>
-        <input class="qty" value="1">
-    </td>
-
+        <td><input type="text" placeholder="Model & Year"></td>
+        <td><input type="text" placeholder="VIN"></td>
+        <td><input type="text" placeholder="Weight"></td>
+        <td><input type="number" value="1" min="1"></td>
     `;
+
+    tbody.appendChild(row);
 
 }
 
+// Clear all form fields
+function clearForm() {
 
+    if (!confirm("Clear all data?")) return;
 
-// Generate PDF
+    document.querySelectorAll("input").forEach(input => {
 
-function generatePDF(){
+        if (input.type === "number")
+            input.value = 1;
+        else
+            input.value = "";
 
+    });
 
-    let booking = document.getElementById("booking").value;
-    let container = document.getElementById("container").value;
-    let seal = document.getElementById("seal").value;
-    let transshipment = document.getElementById("transshipment").value;
+    document.querySelectorAll("textarea").forEach(area => {
 
+        area.value = "";
 
-    let exporter = document.getElementById("exporter").value;
-    let consignee = document.getElementById("consignee").value;
-    let notify = document.getElementById("notify").value;
+    });
 
+    // Keep only one vehicle row
+    const tbody = document.querySelector("#vehicleTable tbody");
 
-    let freight = document.getElementById("freight").value;
-    let hs = document.getElementById("hs").value;
-    let original = document.getElementById("original").value;
+    while (tbody.rows.length > 1) {
+        tbody.deleteRow(1);
+    }
 
+}
 
+// Generate a random Booking Number
+function generateBooking() {
 
-    let vehicles = document.querySelectorAll("#vehicleInput tr");
+    const booking =
+        "EBKG" +
+        Math.floor(10000000 + Math.random() * 90000000);
 
-    let cargo = "";
+    document.getElementById("booking").value = booking;
 
+}
 
+// Generate a random Container Number
+function generateContainer() {
 
-    for(let i=1;i<vehicles.length;i++){
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    let prefix = "";
 
-        let model = vehicles[i].querySelector(".model").value;
-        let vin = vehicles[i].querySelector(".vin").value;
-        let weight = vehicles[i].querySelector(".weight").value;
-        let qty = vehicles[i].querySelector(".qty").value;
+    for (let i = 0; i < 4; i++) {
 
-
-        cargo += `
-
-        <tr>
-
-        <td>${model}</td>
-        <td>${vin}</td>
-        <td>${weight}</td>
-        <td>${qty}</td>
-
-        </tr>
-
-        `;
-
+        prefix += letters.charAt(
+            Math.floor(Math.random() * letters.length)
+        );
 
     }
 
+    const number =
+        Math.floor(1000000 + Math.random() * 9000000);
 
+    document.getElementById("container").value =
+        prefix + number;
 
-    let preview = document.getElementById("preview");
-
-
-    preview.innerHTML = `
-
-
-<div class="bl">
-
-
-<div class="bl-header">
-
-
-<div>
-
-<img src="logo.png" class="logo">
-
-</div>
-
-
-<div class="company-info">
-
-
-<h2>
-HAM INTERNATIONAL TRANSPORT
-</h2>
-
-
-74 Mnt de St Sulpice<br>
-Saint-Sulpice, QC J5W 0H2<br>
-Canada<br>
-
-Documentation@hamintltransport.com<br>
-
-+1 (000) 000-0000
-
-
-</div>
-
-
-</div>
-
-
-
-
-<h1 class="title">
-
-HOUSE BILL OF LADING
-
-</h1>
-
-
-
-
-
-<div class="two-column">
-
-
-<div class="box">
-
-<h3>
-SHIPMENT INFORMATION
-</h3>
-
-
-Booking #: ${booking}<br>
-
-Container #: ${container}<br>
-
-Seal #: ${seal}<br>
-
-Transshipment: ${transshipment}
-
-
-</div>
-
-
-
-
-
-<div class="box">
-
-<h3>
-CARGO INFORMATION
-</h3>
-
-
-Freight: ${freight}<br>
-
-HS Code: ${hs}<br>
-
-Original No: ${original}
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div class="two-column">
-
-
-<div class="box">
-
-<h3>
-EXPORTER
-</h3>
-
-
-${exporter.replace(/\n/g,"<br>")}
-
-
-</div>
-
-
-
-<div class="box">
-
-
-<h3>
-CONSIGNEE
-</h3>
-
-
-${consignee.replace(/\n/g,"<br>")}
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div class="box">
-
-
-<h3>
-NOTIFY PARTY
-</h3>
-
-
-${notify.replace(/\n/g,"<br>")}
-
-
-
-</div>
-
-
-
-
-
-
-<div class="box">
-
-
-<h3>
-VEHICLE DETAILS
-</h3>
-
-
-<table>
-
-
-<tr>
-
-<th>MODEL & YEAR</th>
-<th>VIN</th>
-<th>WEIGHT KG</th>
-<th>QTY</th>
-
-</tr>
-
-
-${cargo}
-
-
-</table>
-
-
-</div>
-
-
-
-
-
-
-<div class="signature">
-
-
-<div>
-_____________________<br>
-SHIPPER SIGNATURE
-</div>
-
-
-<div>
-_____________________<br>
-CARRIER SIGNATURE
-</div>
-
-
-</div>
-
-
-
-
-
-<p class="footer">
-
-Issued by HAM INTERNATIONAL TRANSPORT
-
-</p>
-
-
-
-
-</div>
-
-
-
-`;
-
-
-
-
-
-// Export PDF automatically
-
-
-let options = {
-
-
-margin:10,
-
-filename:"HOUSE_BL.pdf",
-
-
-image:{
-type:"jpeg",
-quality:0.98
-},
-
-
-html2canvas:{
-scale:2
-},
-
-
-jsPDF:{
-unit:"mm",
-format:"a4",
-orientation:"portrait"
 }
 
+// Save data locally
+function saveData() {
+
+    const data = {
+
+        booking: document.getElementById("booking").value,
+
+        container: document.getElementById("container").value,
+
+        seal: document.getElementById("seal").value,
+
+        transshipment:
+            document.getElementById("transshipment").value,
+
+        exporter:
+            document.getElementById("exporter").value,
+
+        consignee:
+            document.getElementById("consignee").value,
+
+        notify:
+            document.getElementById("notify").value,
+
+        freight:
+            document.getElementById("freight").value,
+
+        hs:
+            document.getElementById("hs").value,
+
+        original:
+            document.getElementById("original").value
+
+    };
+
+    localStorage.setItem(
+        "HAM_BL",
+        JSON.stringify(data)
+    );
+
+    alert("Saved.");
+
+}
+
+// Load previous data
+function loadData() {
+
+    const saved =
+        localStorage.getItem("HAM_BL");
+
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    document.getElementById("booking").value =
+        data.booking || "";
+
+    document.getElementById("container").value =
+        data.container || "";
+
+    document.getElementById("seal").value =
+        data.seal || "";
+
+    document.getElementById("transshipment").value =
+        data.transshipment || "";
+
+    document.getElementById("exporter").value =
+        data.exporter || "";
+
+    document.getElementById("consignee").value =
+        data.consignee || "";
+
+    document.getElementById("notify").value =
+        data.notify || "";
+
+    document.getElementById("freight").value =
+        data.freight || "";
+
+    document.getElementById("hs").value =
+        data.hs || "";
+
+    document.getElementById("original").value =
+        data.original || "";
+
+}
+
+// Initialize page
+window.onload = function () {
+
+    loadData();
+
+    if (
+        document.getElementById("booking").value === ""
+    ) {
+        generateBooking();
+    }
+
+    if (
+        document.getElementById("container").value === ""
+    ) {
+        generateContainer();
+    }
 
 };
 
-
-
-html2pdf()
-
-.set(options)
-
-.from(preview)
-
-.save();
-
-
-
-}
+// Auto-save every 5 seconds
+setInterval(saveData, 5000);
