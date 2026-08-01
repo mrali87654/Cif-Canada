@@ -1,153 +1,251 @@
-/* ===================================
-   HAM INTERNATIONAL TRANSPORT
-   HOUSE B/L GENERATOR SCRIPT
-=================================== */
+// =======================================
+// HOUSE B/L GENERATOR SCRIPT
+// =======================================
 
 
-// Create automatic House B/L number when page opens
+// Generate House B/L Preview
 
-window.onload = function () {
+function generateBL() {
 
-    let today = new Date();
+    let blNumber = document.getElementById("blNumber").value;
+    let date = document.getElementById("date").value;
 
-    let year = today.getFullYear().toString().slice(-2);
-    let month = String(today.getMonth()+1).padStart(2,'0');
-    let day = String(today.getDate()).padStart(2,'0');
+    let shipper = document.getElementById("shipper").value;
+    let consignee = document.getElementById("consignee").value;
 
-    let random = Math.floor(1000 + Math.random()*9000);
+    let vehicle = document.getElementById("vehicle").value;
+    let vin = document.getElementById("vin").value;
+    let weight = document.getElementById("weight").value;
 
+    let origin = document.getElementById("origin").value;
+    let destination = document.getElementById("destination").value;
 
-    document.getElementById("blNo").value =
-        "HAM" + year + month + day + random;
 
+    let preview = `
 
-    document.getElementById("date").value =
-        today.toISOString().split("T")[0];
+    <div class="bl-header">
 
-};
+        <div>
+            <img class="logo" src="logo.png">
+        </div>
 
 
+        <div class="company-info">
 
+            <h2>HAM INTERNATIONAL TRANSPORT</h2>
 
+            74 Mnt de St Sulpice<br>
+            Saint-Sulpice, QC J5W 0H2<br>
+            Canada<br>
+            Documentation@hamintltransport.com<br>
+            +1 (000) 000-0000
 
-function generateBL(){
+        </div>
 
+    </div>
 
-    // Get values from form
 
+    <div class="bl-title">
+        HOUSE BILL OF LADING
+    </div>
 
-    document.getElementById("p_bl").innerHTML =
-        document.getElementById("blNo").value;
 
+    <div class="row">
 
-    document.getElementById("p_date").innerHTML =
-        document.getElementById("date").value;
+        <div class="col box">
 
+            <div class="box-title">
+                B/L NUMBER
+            </div>
 
-    document.getElementById("p_shipper").innerHTML =
-        document.getElementById("shipper").value.replace(/\n/g,"<br>");
+            ${blNumber}
 
+        </div>
 
-    document.getElementById("p_consignee").innerHTML =
-        document.getElementById("consignee").value.replace(/\n/g,"<br>");
 
+        <div class="col box">
 
-    document.getElementById("p_notify").innerHTML =
-        document.getElementById("notify").value.replace(/\n/g,"<br>");
+            <div class="box-title">
+                DATE
+            </div>
 
+            ${date}
 
+        </div>
 
-    document.getElementById("p_vessel").innerHTML =
-        document.getElementById("vessel").value
-        + " / "
-        + document.getElementById("voyage").value;
 
+    </div>
 
 
-    document.getElementById("p_loading").innerHTML =
-        document.getElementById("loading").value;
 
+    <div class="row">
 
 
-    document.getElementById("p_discharge").innerHTML =
-        document.getElementById("discharge").value;
+        <div class="col box">
 
+            <div class="box-title">
+                SHIPPER
+            </div>
 
+            ${shipper}
 
-    document.getElementById("p_destination").innerHTML =
-        document.getElementById("destination").value;
+        </div>
 
 
 
-    document.getElementById("p_container").innerHTML =
-        document.getElementById("container").value;
+        <div class="col box">
 
+            <div class="box-title">
+                CONSIGNEE
+            </div>
 
+            ${consignee}
 
-    document.getElementById("p_seal").innerHTML =
-        document.getElementById("seal").value;
+        </div>
 
 
+    </div>
 
-    document.getElementById("p_goods").innerHTML =
-        document.getElementById("goods").value.replace(/\n/g,"<br>");
 
 
+    <div class="box">
 
-    document.getElementById("p_weight").innerHTML =
-        document.getElementById("weight").value + " KG";
+        <div class="box-title">
+            ROUTE
+        </div>
 
+        From : ${origin}
+        <br>
+        To : ${destination}
 
+    </div>
 
-    document.getElementById("p_cbm").innerHTML =
-        document.getElementById("cbm").value + " CBM";
 
 
 
-    document.getElementById("p_freight").innerHTML =
-        document.getElementById("freight").value;
+    <div class="box">
 
+        <div class="box-title">
+            CARGO DETAILS
+        </div>
 
 
-    // Scroll to generated document
 
-    document.getElementById("preview")
-    .scrollIntoView({
+        <table>
 
-        behavior:"smooth"
+            <tr>
 
-    });
+                <th>Description</th>
+                <th>VIN</th>
+                <th>Weight (KG)</th>
 
+            </tr>
+
+
+            <tr>
+
+                <td>${vehicle}</td>
+                <td>${vin}</td>
+                <td>${weight}</td>
+
+            </tr>
+
+
+        </table>
+
+
+    </div>
+
+
+
+
+    <div class="signature">
+
+
+        <div class="sign-box">
+
+            Shipper Signature
+
+        </div>
+
+
+
+        <div class="sign-box">
+
+            Carrier Signature
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="footer">
+
+        Issued by HAM INTERNATIONAL TRANSPORT
+
+    </div>
+
+
+
+    `;
+
+
+
+    document.getElementById("preview").innerHTML = preview;
 
 }
 
 
 
+// =======================================
+// EXPORT PDF
+// =======================================
 
 
-function clearForm(){
+function downloadPDF(){
 
 
-    let inputs = document.querySelectorAll(
-        "input, textarea"
-    );
+    let element = document.getElementById("preview");
 
 
-    inputs.forEach(function(input){
+    let options = {
 
-        input.value="";
+        margin: 10,
 
-    });
+        filename: "House_BL.pdf",
+
+        image: {
+            type:'jpeg',
+            quality:0.98
+        },
+
+
+        html2canvas: {
+            scale:2
+        },
+
+
+        jsPDF:{
+            unit:'mm',
+            format:'a4',
+            orientation:'portrait'
+        }
+
+    };
 
 
 
-    document.getElementById("preview")
-    .querySelectorAll("td:nth-child(2)")
-    .forEach(function(cell){
+    html2pdf()
 
-        cell.innerHTML="";
+    .set(options)
 
-    });
+    .from(element)
+
+    .save();
+
 
 
 }
