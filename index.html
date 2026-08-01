@@ -1,170 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>HAM House B/L Generator</title>
+<title>HAM House Bill of Lading</title>
 
 <link rel="stylesheet" href="style.css">
 
 </head>
-
-
 <body>
-
 
 <div class="container">
 
+    <header>
 
-<h1>HOUSE BILL OF LADING GENERATOR</h1>
+        <div class="company">
 
+            <img src="logo.png" class="logo">
 
-<div class="form-box">
+            <div>
 
+                <h1>HAM INTERNATIONAL TRANSPORT</h1>
 
-<h2>Shipment Information</h2>
+                <p>
+                    74 Mnt de St Sulpice<br>
+                    Saint-Sulpice, QC J5W 0H2<br>
+                    Canada
+                </p>
 
+                <p>
+                    Documentation@hamintltransport.com<br>
+                    +1 (514) 238-4241
+                </p>
 
-<div class="grid">
+            </div>
 
-<div>
-<label>Booking #</label>
-<input id="booking">
+        </div>
+
+        <h2>HOUSE BILL OF LADING</h2>
+
+    </header>
+
+    <section class="numbers">
+
+        <div>
+            <label>Booking #</label>
+            <input id="booking" type="text">
+        </div>
+
+        <div>
+            <label>Container #</label>
+            <input id="container" type="text">
+        </div>
+
+        <div>
+            <label>Seal #</label>
+            <input id="seal" type="text">
+        </div>
+
+        <div>
+            <label>Transshipment</label>
+            <input id="transshipment" type="text">
+        </div>
+
+    </section>
+
+    <section class="three-columns">
+
+        <div class="box">
+
+            <h3>Exporter</h3>
+
+            <textarea id="exporter"></textarea>
+
+        </div>
+
+        <div class="box">
+
+            <h3>Consignee</h3>
+
+            <textarea id="consignee"></textarea>
+
+        </div>
+
+        <div class="box">
+
+            <h3>Notify Party</h3>
+
+            <textarea id="notify"></textarea>
+
+        </div>
+
+    </section>
+
+    <h3>Vehicles</h3>
+
+    <table id="vehicleTable">
+
+        <thead>
+
+        <tr>
+
+            <th>Model & Year</th>
+
+            <th>VIN</th>
+
+            <th>Weight (KG)</th>
+
+            <th>Qty</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+            <td><input type="text"></td>
+
+            <td><input type="text"></td>
+
+            <td><input type="text"></td>
+
+            <td><input type="number" value="1"></td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <button onclick="addRow()">
+        + Add Vehicle
+    </button>
+
+    <section class="footer-info">
+
+        <div>
+
+            <label>Freight Term</label>
+
+            <input id="freight" value="PREPAID">
+
+        </div>
+
+        <div>
+
+            <label>HS Code</label>
+
+            <input id="hs">
+
+        </div>
+
+        <div>
+
+            <label>Original No / SWB</label>
+
+            <input id="original">
+
+        </div>
+
+    </section>
+
+    <div class="buttons">
+
+        <button onclick="window.print()">
+            Print PDF
+        </button>
+
+        <button onclick="clearForm()">
+            Clear
+        </button>
+
+    </div>
+
 </div>
-
-
-<div>
-<label>Container #</label>
-<input id="container">
-</div>
-
-
-<div>
-<label>Seal #</label>
-<input id="seal">
-</div>
-
-
-<div>
-<label>Transshipment</label>
-<input id="transshipment">
-</div>
-
-
-</div>
-
-
-
-<h2>Exporter</h2>
-
-<textarea id="exporter"></textarea>
-
-
-
-<h2>Consignee</h2>
-
-<textarea id="consignee"></textarea>
-
-
-
-<h2>Notify Party</h2>
-
-<textarea id="notify"></textarea>
-
-
-
-
-<h2>Vehicle Information</h2>
-
-
-<table id="vehicleInput">
-
-<tr>
-<th>MODEL & YEAR</th>
-<th>VIN</th>
-<th>WEIGHT KG</th>
-<th>QTY</th>
-</tr>
-
-
-<tr>
-
-<td>
-<input class="model">
-</td>
-
-<td>
-<input class="vin">
-</td>
-
-<td>
-<input class="weight">
-</td>
-
-<td>
-<input class="qty" value="1">
-</td>
-
-</tr>
-
-
-</table>
-
-
-<button onclick="addVehicle()">+ Add Vehicle</button>
-
-
-<br><br>
-
-
-<label>Freight Term</label>
-<input id="freight" value="PREPAID">
-
-
-<label>HS Code</label>
-<input id="hs">
-
-
-<label>Original No</label>
-<input id="original">
-
-
-
-<br><br>
-
-
-<button class="generate" onclick="generatePDF()">
-GENERATE PDF
-</button>
-
-
-</div>
-
-
-
-<div id="preview"></div>
-
-
-
-</div>
-
-
-
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 
 <script src="script.js"></script>
 
-
 </body>
-
 </html>
