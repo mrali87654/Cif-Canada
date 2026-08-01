@@ -22,9 +22,6 @@
 <h1>HOUSE BILL OF LADING GENERATOR</h1>
 
 
-<!-- FORM -->
-
-
 <div class="form-box">
 
 
@@ -32,7 +29,6 @@
 
 
 <div class="grid">
-
 
 <div>
 <label>Booking #</label>
@@ -64,22 +60,19 @@
 
 <h2>Exporter</h2>
 
-<textarea id="exporter"
-placeholder="Company name&#10;Address&#10;Phone&#10;Email"></textarea>
+<textarea id="exporter"></textarea>
 
 
 
 <h2>Consignee</h2>
 
-<textarea id="consignee"
-placeholder="Company name&#10;Address&#10;Phone&#10;Email&#10;NIF"></textarea>
+<textarea id="consignee"></textarea>
 
 
 
 <h2>Notify Party</h2>
 
-<textarea id="notify"
-placeholder="Company name&#10;Address&#10;Phone&#10;Email&#10;NIF"></textarea>
+<textarea id="notify"></textarea>
 
 
 
@@ -89,14 +82,11 @@ placeholder="Company name&#10;Address&#10;Phone&#10;Email&#10;NIF"></textarea>
 
 <table id="vehicleInput">
 
-
 <tr>
-
 <th>MODEL & YEAR</th>
 <th>VIN</th>
 <th>WEIGHT KG</th>
 <th>QTY</th>
-
 </tr>
 
 
@@ -118,34 +108,27 @@ placeholder="Company name&#10;Address&#10;Phone&#10;Email&#10;NIF"></textarea>
 <input class="qty" value="1">
 </td>
 
-
 </tr>
 
 
 </table>
 
 
-<button onclick="addVehicle()">
-+ Add Vehicle
-</button>
-
+<button onclick="addVehicle()">+ Add Vehicle</button>
 
 
 <br><br>
 
 
 <label>Freight Term</label>
-
 <input id="freight" value="PREPAID">
 
 
 <label>HS Code</label>
-
 <input id="hs">
 
 
 <label>Original No</label>
-
 <input id="original">
 
 
@@ -153,11 +136,8 @@ placeholder="Company name&#10;Address&#10;Phone&#10;Email&#10;NIF"></textarea>
 <br><br>
 
 
-<button class="generate"
-onclick="generatePDF()">
-
+<button class="generate" onclick="generatePDF()">
 GENERATE PDF
-
 </button>
 
 
@@ -165,10 +145,22 @@ GENERATE PDF
 
 
 
+<div id="preview"></div>
+
+
+
 </div>
 
 
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 
 <script src="script.js"></script>
 
