@@ -1,208 +1,103 @@
-/* ===============================
-   HOUSE B/L GENERATOR STYLE
-   =============================== */
-
-* {
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    margin: 0;
-    padding: 20px;
-    background: #f2f4f7;
-    color: #222;
+*{
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 
-/* Main container */
+body{
 
-.container {
-    max-width: 1200px;
-    margin: auto;
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.15);
-}
-
-
-/* Title */
-
-h1 {
-    text-align: center;
-    color: #003366;
-    margin-bottom: 25px;
-}
-
-
-/* Form layout */
-
-.form-section {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-
-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-
-input,
-textarea,
-select {
-
-    padding: 10px;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-
-textarea {
-    resize: vertical;
-}
-
-
-/* Buttons */
-
-button {
-
-    background: #003366;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 5px;
+    background:#e9edf2;
+    margin:0;
+    padding:20px;
 
 }
 
 
-button:hover {
 
-    background: #0055a5;
+/* MAIN */
 
-}
+.container{
 
-
-/* Preview area */
-
-#preview {
-
-    margin-top: 30px;
-    background: white;
-    border: 1px solid #aaa;
-    padding: 30px;
-}
-
-
-/* ===============================
-   HOUSE BILL OF LADING PDF STYLE
-   =============================== */
-
-
-.bl-header {
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 3px solid #003366;
-    padding-bottom: 15px;
+    max-width:1200px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 20px rgba(0,0,0,0.15);
 
 }
 
 
-.logo {
 
-    width: 150px;
-}
+h1{
 
-
-.company-info {
-
-    text-align: right;
-    font-size: 13px;
-
-}
-
-
-.company-info h2 {
-
-    margin: 0;
+    text-align:center;
     color:#003366;
 
 }
 
 
-/* BL title */
 
-.bl-title {
+h2{
 
-    text-align:center;
-    margin:20px 0;
-    font-size:24px;
-    font-weight:bold;
+    color:#003366;
+    border-bottom:2px solid #003366;
+    padding-bottom:5px;
 
 }
 
 
 
-/* Boxes */
 
-.box {
 
-    border:1px solid #333;
+/* FORM */
+
+.grid{
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+
+}
+
+
+
+label{
+
+    display:block;
+    font-weight:bold;
+    margin-top:10px;
+
+}
+
+
+
+input,
+textarea{
+
+
+    width:100%;
     padding:10px;
-    margin-bottom:10px;
-
-}
-
-
-.box-title {
-
-    background:#003366;
-    color:white;
-    padding:5px;
-    font-weight:bold;
-
-}
-
-
-/* Two columns */
-
-.row {
-
-    display:flex;
-    gap:10px;
-
-}
-
-
-.col {
-
-    flex:1;
+    border:1px solid #aaa;
+    border-radius:5px;
+    margin-top:5px;
 
 }
 
 
 
-/* Table */
+textarea{
+
+    height:100px;
+
+}
 
 
-table {
+
+
+/* TABLE INPUT */
+
+table{
 
     width:100%;
     border-collapse:collapse;
@@ -211,73 +106,270 @@ table {
 }
 
 
-table th {
+
+th{
 
     background:#003366;
     color:white;
+    padding:8px;
 
 }
 
 
-table th,
-table td {
+
+td{
 
     border:1px solid #333;
-    padding:8px;
-    text-align:center;
+    padding:5px;
+
+}
+
+
+td input{
+
+    border:none;
+
+}
+
+
+
+
+
+/* BUTTONS */
+
+
+button{
+
+
+    background:#003366;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    margin-top:15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+
+
+}
+
+
+button:hover{
+
+    background:#0055aa;
+
+}
+
+
+
+
+
+/* PREVIEW */
+
+
+#preview{
+
+
+    margin-top:40px;
+
+}
+
+
+
+
+/* HOUSE BL */
+
+.bl{
+
+
+    width:210mm;
+    min-height:297mm;
+    padding:15mm;
+    background:white;
+    border:1px solid #555;
+
+
+}
+
+
+
+.bl-header{
+
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:3px solid #003366;
+    padding-bottom:10px;
+
+
+}
+
+
+
+.logo{
+
+    width:150px;
+
+}
+
+
+
+
+.company-info{
+
+    text-align:right;
     font-size:13px;
 
 }
 
 
 
-/* Signature section */
+.company-info h2{
+
+    border:none;
+    margin:0;
+    color:#003366;
+
+}
 
 
-.signature {
 
-    margin-top:50px;
+
+.title{
+
+
+    text-align:center;
+    font-size:26px;
+    margin:20px 0;
+    color:#003366;
+
+
+}
+
+
+
+
+
+.two-column{
+
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:10px;
+
+
+}
+
+
+
+.box{
+
+
+    border:1px solid #333;
+    padding:10px;
+    min-height:80px;
+
+
+}
+
+
+
+.box h3{
+
+
+    background:#003366;
+    color:white;
+    padding:6px;
+    margin:-10px -10px 10px -10px;
+    font-size:14px;
+
+
+}
+
+
+
+
+
+.box table{
+
+    margin-top:10px;
+
+}
+
+
+
+.box th{
+
+
+    font-size:12px;
+
+}
+
+
+.box td{
+
+
+    font-size:12px;
+    text-align:center;
+
+}
+
+
+
+
+
+.signature{
+
+
     display:flex;
     justify-content:space-between;
-
-}
-
-
-.sign-box {
-
-    width:40%;
+    margin-top:70px;
     text-align:center;
-    border-top:1px solid #333;
-    padding-top:10px;
+
 
 }
 
 
 
-/* Footer */
+.footer{
 
-.footer {
 
-    margin-top:30px;
     text-align:center;
+    margin-top:40px;
     font-size:12px;
     color:#555;
 
+
 }
 
 
-/* Mobile */
-
-@media(max-width:768px){
-
-    .form-section{
-        grid-template-columns:1fr;
-    }
 
 
-    .row{
-        flex-direction:column;
-    }
+
+@media(max-width:900px){
+
+
+.grid{
+
+    grid-template-columns:1fr;
+
+}
+
+
+.two-column{
+
+    grid-template-columns:1fr;
+
+}
+
+
+.bl{
+
+    width:100%;
+
+}
 
 
 }
