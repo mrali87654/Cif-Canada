@@ -1,167 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAM INTERNATIONAL TRANSPORT - House B/L Generator</title>
 
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>HAM House Bill of Lading Generator</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>HAM INTERNATIONAL TRANSPORT</h1>
+    <h1>HOUSE BILL OF LADING GENERATOR</h1>
 
-<p class="subtitle">House Bill of Lading Generator</p>
+    <!-- COMPANY INFO -->
 
-<!-- Shipment Information -->
+    <div class="company">
 
-<div class="card">
+        <div class="logo">
+            <img src="logo.png" id="logo" alt="Logo">
+        </div>
 
-<h2>Shipment Information</h2>
+        <div class="company-info">
 
-<div class="grid2">
+            <h2>HAM INTERNATIONAL TRANSPORT</h2>
 
-<div>
+            <p>74 Mnt de St Sulpice</p>
+            <p>Saint-Sulpice, QC J5W 0H2, Canada</p>
+            <p>Documentation@hamintltransport.com</p>
+            <p>+1 (514) XXX-XXXX</p>
 
-<label>Booking Number</label>
+        </div>
 
-<input id="booking" type="text">
+    </div>
 
+<hr>
+
+<div class="form">
+
+<div class="row">
+
+<div class="group">
+<label>House B/L No.</label>
+<input type="text" id="blNo">
 </div>
 
-<div>
-
-<label>Container Number</label>
-
-<input id="container" type="text">
-
-</div>
-
-<div>
-
-<label>Seal Number</label>
-
-<input id="seal" type="text">
-
-</div>
-
-<div>
-
-<label>Transshipment</label>
-
-<input id="trans" type="text">
-
-</div>
-
-<div>
-
-<label>HBL Number</label>
-
-<input id="hbl" type="text" placeholder="HAM-000001">
-
-</div>
-
-<div>
-
+<div class="group">
 <label>Date</label>
-
-<input id="date" type="date">
-
+<input type="date" id="date">
 </div>
 
 </div>
 
+<div class="group">
+<label>Shipper</label>
+<textarea id="shipper"></textarea>
 </div>
 
-<!-- Exporter -->
-
-<div class="card">
-
-<h2>Exporter</h2>
-
-<textarea id="exporter"></textarea>
-
-</div>
-
-<!-- Consignee -->
-
-<div class="card">
-
-<h2>Consignee</h2>
-
+<div class="group">
+<label>Consignee</label>
 <textarea id="consignee"></textarea>
-
 </div>
 
-<!-- Notify -->
-
-<div class="card">
-
-<h2>Notify Party</h2>
-
+<div class="group">
+<label>Notify Party</label>
 <textarea id="notify"></textarea>
+</div>
+
+<div class="row">
+
+<div class="group">
+<label>Vessel</label>
+<input type="text" id="vessel">
+</div>
+
+<div class="group">
+<label>Voyage</label>
+<input type="text" id="voyage">
+</div>
 
 </div>
 
-<!-- Vehicles -->
+<div class="row">
 
-<div class="card">
+<div class="group">
+<label>Port of Loading</label>
+<input type="text" id="loading">
+</div>
 
-<h2>Vehicles</h2>
+<div class="group">
+<label>Port of Discharge</label>
+<input type="text" id="discharge">
+</div>
 
-<table id="vehicleTable">
+</div>
 
-<thead>
+<div class="group">
+<label>Final Destination</label>
+<input type="text" id="destination">
+</div>
 
-<tr>
+<div class="row">
 
-<th>Model & Year</th>
+<div class="group">
+<label>Container No.</label>
+<input type="text" id="container">
+</div>
 
-<th>VIN Number</th>
+<div class="group">
+<label>Seal No.</label>
+<input type="text" id="seal">
+</div>
 
-<th>Weight (KG)</th>
+</div>
 
-<th>Qty</th>
+<div class="group">
+<label>Description of Goods</label>
+<textarea id="goods"></textarea>
+</div>
 
-<th>Remove</th>
+<div class="row">
 
-</tr>
+<div class="group">
+<label>Gross Weight (KG)</label>
+<input type="number" id="weight">
+</div>
 
-</thead>
+<div class="group">
+<label>Measurement (CBM)</label>
+<input type="number" step="0.001" id="cbm">
+</div>
 
-<tbody>
+</div>
 
-</tbody>
-
-</table>
-
-<br>
-
-<button id="addVehicleBtn">
-
-+ Add Vehicle
-
-</button>
-
+<div class="group">
+<label>Freight Payable At</label>
+<input type="text" id="freight">
 </div>
 
 <div class="buttons">
 
-<button id="generateBtn">
-
-Generate House B/L PDF
-
+<button onclick="generateBL()">
+Generate House B/L
 </button>
+
+<button onclick="window.print()">
+Print
+</button>
+
+<button onclick="clearForm()">
+Clear
+</button>
+
+</div>
+
+</div>
+
+<hr>
+
+<div id="preview">
+
+<h2>HOUSE BILL OF LADING</h2>
+
+<table>
+
+<tr>
+<td><b>House B/L No.</b></td>
+<td id="p_bl"></td>
+</tr>
+
+<tr>
+<td><b>Date</b></td>
+<td id="p_date"></td>
+</tr>
+
+<tr>
+<td><b>Shipper</b></td>
+<td id="p_shipper"></td>
+</tr>
+
+<tr>
+<td><b>Consignee</b></td>
+<td id="p_consignee"></td>
+</tr>
+
+<tr>
+<td><b>Notify Party</b></td>
+<td id="p_notify"></td>
+</tr>
+
+<tr>
+<td><b>Vessel / Voyage</b></td>
+<td id="p_vessel"></td>
+</tr>
+
+<tr>
+<td><b>Port of Loading</b></td>
+<td id="p_loading"></td>
+</tr>
+
+<tr>
+<td><b>Port of Discharge</b></td>
+<td id="p_discharge"></td>
+</tr>
+
+<tr>
+<td><b>Final Destination</b></td>
+<td id="p_destination"></td>
+</tr>
+
+<tr>
+<td><b>Container No.</b></td>
+<td id="p_container"></td>
+</tr>
+
+<tr>
+<td><b>Seal No.</b></td>
+<td id="p_seal"></td>
+</tr>
+
+<tr>
+<td><b>Description of Goods</b></td>
+<td id="p_goods"></td>
+</tr>
+
+<tr>
+<td><b>Gross Weight</b></td>
+<td id="p_weight"></td>
+</tr>
+
+<tr>
+<td><b>Measurement</b></td>
+<td id="p_cbm"></td>
+</tr>
+
+<tr>
+<td><b>Freight Payable At</b></td>
+<td id="p_freight"></td>
+</tr>
+
+</table>
+
+<div class="signature">
+
+<p>
+HAM INTERNATIONAL TRANSPORT
+</p>
+
+<br><br><br>
+
+____________________________
+
+<p>Authorized Signature</p>
+
+</div>
 
 </div>
 
@@ -170,5 +263,4 @@ Generate House B/L PDF
 <script src="script.js"></script>
 
 </body>
-
 </html>
